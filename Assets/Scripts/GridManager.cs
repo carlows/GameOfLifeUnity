@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -10,7 +11,8 @@ public class GridManager : MonoBehaviour {
 
     public Vector2Int gridDimensions;
     public float iterationDelay = 1.0f;
-
+    public float activeProbability = 0.15f;
+    
     private Cell[,] _cells;
 
     private bool started = false;
@@ -18,9 +20,7 @@ public class GridManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        GenerateGrid();
-
-        //StartCoroutine("GameOfLifeIteration");
+        GenerateGrid();        
 	}
 
     void Update()
@@ -29,6 +29,11 @@ public class GridManager : MonoBehaviour {
         {
             RestartGrid();
         }
+        
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            FillRandomly();
+        }        
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -81,6 +86,20 @@ public class GridManager : MonoBehaviour {
             CheckState();
 
             yield return new WaitForSeconds(iterationDelay);
+        }
+    }
+
+    public void setModeAndRestart(IRuleStrategy strategy)
+    {
+        started = false;
+
+        for (int rowCell = 0; rowCell < gridDimensions.x; rowCell++)
+        {
+            for (int colCell = 0; colCell < gridDimensions.y; colCell++)
+            {
+                _cells[rowCell, colCell].setDead();
+                _cells[rowCell, colCell].strategy = strategy;
+            }
         }
     }
 
@@ -137,9 +156,24 @@ public class GridManager : MonoBehaviour {
         }
     }
 
+    private void FillRandomly()
+    {
+        for (int x = 0; x < gridDimensions.x; x++)
+        {
+            for (int y = 0; y < gridDimensions.y; y++)
+            {
+                if (UnityEngine.Random.value < activeProbability)
+                {
+                    _cells[x, y].setActive();
+                }
+            }
+        }
+    }
+
     private void GenerateGrid()
     {
         _cells = new Cell[gridDimensions.x, gridDimensions.y];
+        IRuleStrategy conwaysStrategy = new ConwaysRuleStrategy();
 
         for (int x = 0; x < gridDimensions.x; x++)
         {
@@ -150,6 +184,7 @@ public class GridManager : MonoBehaviour {
                 cell.transform.localScale *= 0.9f;
                 cell.transform.parent = _parent.transform;
                 cell.location = new Vector2Int(x, y);
+                cell.strategy = conwaysStrategy;
 
                 //if(UnityEngine.Random.value < activeProbability)
                 //{
@@ -173,4 +208,17 @@ public struct Vector2Int
         this.x = x;
         this.y = y;
     }
+}
+
+public enum Modo
+{
+    Conways,
+    Caos,
+    Replicas,
+    Amebas,
+    HighLife,
+    DiffusionRule,
+    Muerte,
+    Vida34,
+    LongLife
 }

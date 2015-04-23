@@ -16,7 +16,7 @@ public class CameraControl : MonoBehaviour {
         var verticalInput = Input.GetAxisRaw("Vertical");
         var scroll = Input.GetAxis("Mouse ScrollWheel");
         cameraSize -= scroll;
-        cameraSize = Mathf.Clamp(cameraSize, 5.0f, 15.0f);
+        cameraSize = Mathf.Clamp(cameraSize, 5.0f, 20.0f);
 
         if(scroll != 0)
         {

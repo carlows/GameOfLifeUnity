@@ -6,6 +6,7 @@ public class Cell : MonoBehaviour
     public bool alive { get; set; }
     public Vector2Int location { get; set; }
     public int numberOfNeighbours { get; set; }
+    public IRuleStrategy strategy { get; set; }
 
     void Start()
     {
@@ -14,6 +15,13 @@ public class Cell : MonoBehaviour
     
     public void CheckState()
     {
+        alive = strategy.CheckState(alive, numberOfNeighbours);
+
+        if (alive)
+            setActive();
+        else
+            setDead();
+        /*
         if (alive)
         {
             if (numberOfNeighbours < 2)
@@ -25,7 +33,7 @@ public class Cell : MonoBehaviour
         {
             if (numberOfNeighbours == 3)
                 setActive();
-        }
+        }*/
     }
 
     public void setActive()
