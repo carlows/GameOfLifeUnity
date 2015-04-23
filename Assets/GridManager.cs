@@ -132,11 +132,9 @@ public class GridManager : MonoBehaviour {
         {
             for (int y = 0; y < gridDimensions.y; y++)
             {
-                Destroy(_cells[x, y].gameObject);
+                _cells[x, y].setDead();
             }
         }
-
-        GenerateGrid();
     }
 
     private void GenerateGrid()
